@@ -16,6 +16,9 @@ module.exports = {
   },
   rules: {
   },
+  globals: {
+    Conekta: true
+  },
   overrides: [
     // node files
     {

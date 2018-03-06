@@ -1,0 +1,47 @@
+<div class="name-row">
+  <label for="name">
+    <span>{{nameLabel}}</span>
+    <input maxlength="20" name="name" value={{name}}>
+    {{#if name_error}}
+      <br/>
+      <span class="errors">{{name_error}}</span>
+    {{/if}}
+  </label>
+</div>
+<div class="number-row">
+  <label for="number">
+    <span>{{numberLabel}}</span>
+    <input maxlength="20" name="number" value={{number}} oninput={{action 'validateNumber'}}>
+    {{#if number_error}}
+      <br/>
+      <span class="errors">{{number_error}}</span>
+    {{/if}}
+  </label>
+</div>
+<div class="security-row">
+  <label for="exp_month">
+    <span>{{expMonthLabel}}</span>
+    <input maxlength="2" name="exp_month" value={{exp_month}} oninput={{action 'validateNumber'}}>
+    {{#if exp_month_error}}
+      <br/>
+      <span class="errors">{{exp_month_error}}</span>
+    {{/if}}
+  </label>
+  <label for="exp_year">
+    <span>{{expYearLabel}}</span>
+    <input maxlength="4" name="exp_year" value={{exp_year}} oninput={{action 'validateNumber'}}>
+    {{#if exp_year_error}}
+      <br/>
+      <span class="errors">{{exp_year_error}}</span>
+    {{/if}}
+  </label>
+  <label for="cvc">
+    <span>{{cvcLabel}}</span>
+    <input maxlength="4" name="cvc" value={{cvc}} oninput={{action 'validateNumber'}}>
+    {{#if cvc_error}}
+      <br/>
+      <span class="errors">{{cvc_error}}</span>
+    {{/if}}
+  </label>
+</div>
+<button disabled={{disabled}}>Aceptar</button>
