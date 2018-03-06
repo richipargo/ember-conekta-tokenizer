@@ -1,26 +1,27 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render } from '@ember/test-helpers';
+import { click, fillIn, render, waitFor } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | conekta-form', function(hooks) {
   setupRenderingTest(hooks);
 
   test('it renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.set('myAction', function(val) { ... });
 
-    await render(hbs`{{conekta-form}}`);
+    this.set('onSuccess', async (response) => {
+      assert.equal(response.object, 'token')
+      assert.ok(response.id)
+    });
+    this.set('onError', () => {});
 
-    assert.equal(this.element.textContent.trim(), '');
+    await render(hbs`{{conekta-form onSuccess=(action onSuccess) onError=(action onError)}}`);
 
-    // Template block usage:
-    await render(hbs`
-      {{#conekta-form}}
-        template block text
-      {{/conekta-form}}
-    `);
-
-    assert.equal(this.element.textContent.trim(), 'template block text');
+    await fillIn('input[name="name"]', 'Ricardo Tapia Mancera');
+    await fillIn('input[name="number"]', '4242424242424242');
+    await fillIn('input[name="exp_month"]', '12');
+    await fillIn('input[name="exp_year"]', '2020');
+    await fillIn('input[name="cvc"]', '123');
+    await click('button[type="submit"]');
+    await waitFor('form.settled');
   });
 });

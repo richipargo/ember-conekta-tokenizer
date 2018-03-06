@@ -1,8 +1,10 @@
 import Component from '@ember/component';
 import layout from '../templates/components/conekta-form';
+import { run } from '@ember/runloop';
 
 export default Component.extend({
   layout,
+  classNameBindings: ['settled'],
   /**
    * Component type
    */
@@ -11,6 +13,10 @@ export default Component.extend({
    * Form status
    */
   disabled: false,
+  /**
+   * Wait for conekta resolution
+   */
+  settled: false,
   /**
    * Card Number
    */
@@ -40,6 +46,10 @@ export default Component.extend({
    * on success handler
    */
   onSuccess: undefined,
+  success(response){
+    this.set('settled', true);
+    this.get('onSuccess')(response);
+  },
   /**
    * on error handler
    */
@@ -48,20 +58,21 @@ export default Component.extend({
    * error show
    */
   error(response){
+    this.set('settled', true);
     if(response.object === 'error'){
       let matcher = /\[(.*)\]/g;
       let param = matcher.exec(response.param);
       this.set(`${param[1]}_error`, response.message_to_purchaser);
     }
-    this.get('onError')();
+    this.get('onError')(response);
   },
   /**
    * Submit event action
    */
   submit(e){
     e.preventDefault();
-    Conekta.Token.create(
-      {
+    run(()=> {
+      let data = {
         card: {
           number: this.get('number'),
           name: this.get('name'),
@@ -69,14 +80,18 @@ export default Component.extend({
           exp_year: this.get('exp_year'),
           exp_month: this.get('exp_month'),
         },
-      },
-      this.get('onSuccess').bind(this),
-      this.get('error').bind(this)
-    );
+      };
+      Conekta.Token.create(
+        data,
+        this.get('success').bind(this),
+        this.get('error').bind(this)
+      )
+    });
   },
   actions: {
-    validateNumber(e){
+    validateNumber(field, e){
       e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+      this.set(field, e.target.value);
     }
   },
 });
