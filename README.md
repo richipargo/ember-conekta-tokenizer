@@ -15,7 +15,7 @@ Usage
 ------------------------------------------------------------------------------
 
 1. In order to use the tokenizer form included on this addon you must first configure
-setup the public key
+setup the public key on `config/environment.js`
 
 ```javascript
 module.exports = function(environment) {
