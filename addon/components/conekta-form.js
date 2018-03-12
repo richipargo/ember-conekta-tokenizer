@@ -62,7 +62,9 @@ export default Component.extend({
     if(response.object === 'error'){
       let matcher = /\[(.*)\]/g;
       let param = matcher.exec(response.param);
-      this.set(`${param[1]}_error`, response.message_to_purchaser);
+      if(param && param.length > 0){
+        this.set(`${param[1]}_error`, response.message_to_purchaser);
+      }
     }
     this.get('onError')(response);
   },
