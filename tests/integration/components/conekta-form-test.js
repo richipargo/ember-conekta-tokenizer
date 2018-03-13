@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, fillIn, render, waitFor } from '@ember/test-helpers';
+import { fillIn, render, waitFor } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
 module('Integration | Component | conekta-form', function(hooks) {
@@ -21,7 +21,6 @@ module('Integration | Component | conekta-form', function(hooks) {
     await fillIn('input[name="exp_month"]', '12');
     await fillIn('input[name="exp_year"]', '2020');
     await fillIn('input[name="cvc"]', '123');
-    await click('button[type="submit"]');
     await waitFor('form.settled');
   });
 });

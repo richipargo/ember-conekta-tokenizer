@@ -1,6 +1,7 @@
 import Component from '@ember/component';
 import layout from '../templates/components/conekta-form';
 import { run } from '@ember/runloop';
+import { observer } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -71,25 +72,38 @@ export default Component.extend({
   /**
    * Submit event action
    */
-  submit(e){
-    e.preventDefault();
-    run(()=> {
-      let data = {
-        card: {
-          number: this.get('number'),
-          name: this.get('name'),
-          cvc: this.get('cvc'),
-          exp_year: this.get('exp_year'),
-          exp_month: this.get('exp_month'),
-        },
-      };
-      Conekta.Token.create(
-        data,
-        this.get('success').bind(this),
-        this.get('error').bind(this)
-      )
-    });
-  },
+  viewFields: observer(
+    'number',
+    'name',
+    'cvc',
+    'exp_year',
+    'exp_month',
+  function(){
+    if(
+      (this.get('number') !== undefined && this.get('number') !== null) &&
+      (this.get('name') !== undefined && this.get('name') !== null) &&
+      (this.get('cvc') !== undefined && this.get('cvc') !== null) &&
+      (this.get('exp_year') !== undefined && this.get('exp_year') !== null) &&
+      (this.get('exp_month') !== undefined && this.get('exp_month') !== null)
+    ){
+      run.debounce(()=> {
+        let data = {
+          card: {
+            number: this.get('number'),
+            name: this.get('name'),
+            cvc: this.get('cvc'),
+            exp_year: this.get('exp_year'),
+            exp_month: this.get('exp_month'),
+          },
+        };
+        Conekta.Token.create(
+          data,
+          this.get('success').bind(this),
+          this.get('error').bind(this)
+        )
+      }, 2000);
+    }
+  }),
   actions: {
     validateNumber(field, e){
       e.target.value = e.target.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
