@@ -48,6 +48,8 @@ export default Component.extend({
    */
   onSuccess: undefined,
   success(response){
+    response.cardType = Conekta.card.getBrand(this.number);
+    response.lastDigits = this.number.substr(12, 4);
     this.set('settled', true);
     this.get('onSuccess')(response);
   },
